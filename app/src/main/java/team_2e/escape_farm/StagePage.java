@@ -7,9 +7,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 
-import static team_2e.escape_farm.Variable.boardSize;
 
 public class StagePage extends AppCompatActivity {
+    getStageData StageData = new getStageData(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,13 +21,13 @@ public class StagePage extends AppCompatActivity {
     public void onStageClick(View view) {
         switch (view.getId()) {
             case R.id.stage_1:
-                boardSize=4;
+                StageData.getData("1");
                 break;
             case R.id.stage_2:
-                boardSize=6;
+                StageData.getData("2");
                 break;
             case R.id.stage_3:
-                boardSize=8;
+                StageData.getData("3");
                 break;
         }
         Intent intent = new Intent(StagePage.this, Game_Stage.class);
