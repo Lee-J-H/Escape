@@ -38,7 +38,7 @@ public class getStageData extends Activity {
                 data_txt += String.format("%c", ch);
 
             stage.clear();
-            List<String> list = Arrays.asList(data_txt.split("\n"));
+            List<String> list = Arrays.asList(data_txt.split("/"));
             for (int i = 0; i < list.size(); i++) {
                 String[] array = list.get(i).split(",");
                 List<String> list2 = Arrays.asList(array);

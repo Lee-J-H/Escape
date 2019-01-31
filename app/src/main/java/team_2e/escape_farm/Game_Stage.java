@@ -1,7 +1,7 @@
 package team_2e.escape_farm;
 
 import android.content.Context;
-import android.content.res.AssetManager;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,17 +10,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.List;
-
-import static team_2e.escape_farm.Variable.mAct;
 import static team_2e.escape_farm.Variable.moveCount;
 import static team_2e.escape_farm.Variable.stageCount;
 
@@ -40,7 +29,6 @@ public class Game_Stage extends AppCompatActivity {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);//제목 없음
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_stage);
-        mAct = this;
     }
 
     public void setMoveCount(){
@@ -51,6 +39,12 @@ public class Game_Stage extends AppCompatActivity {
     public void setStageCount(){
         TextView stageText = findViewById(R.id.stageCount);
         stageText.setText("스테이지: " + stageCount);
+    }
+
+    public void backStage(){
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
 
@@ -69,8 +63,9 @@ public class Game_Stage extends AppCompatActivity {
     //다이얼로그 클릭이벤트
     private View.OnClickListener DialogListener = new View.OnClickListener() {
         public void onClick(View v) {
+            backStage();
+            finish();
             dialog.dismiss();
-            mAct.finish();
         }
     };
 //출처: http://yoo-hyeok.tistory.com/51 [유혁의 엉터리 개발]
