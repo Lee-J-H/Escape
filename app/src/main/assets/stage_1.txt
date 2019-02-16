@@ -1,1 +1,1 @@
-0,0,0,not,not/0,3,3,not,not/1,0,1,not,not/10,2,2,not,not/0,2,0,not,right/0,2,2,down,not/
+0,0,0,off,off/0,3,3,off,off/1,0,1,off,off/10,2,2,off,off/0,2,0,on,off/0,2,2,off,on/

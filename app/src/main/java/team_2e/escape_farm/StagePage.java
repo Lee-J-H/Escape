@@ -21,7 +21,7 @@ public class StagePage extends AppCompatActivity implements View.OnClickListener
     static final int CLEAR_STAGE = 1;
     getStageData StageData = new getStageData(this);
     Context mContext = this;
-    LinearLayout[] stageNum = new LinearLayout[3];
+    LinearLayout[] stageNum = new LinearLayout[4];
     ImageView[] lockImg;
 
 
