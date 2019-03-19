@@ -73,7 +73,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 firstX = event.getX();
                 firstY = event.getY();
                 for (int i = 0; i < stage.size(); i++)
-                    if (!stage.get(i).get(0).equals("0") && (int) (firstX - blankX) / spaceX == Integer.parseInt(stage.get(i).get(1)) && (int) (firstY - blankY) / spaceY == Integer.parseInt(stage.get(i).get(2))) { //빈칸이 아니고 동물이 있는 땅을 눌렀을 때
+                    if (!stage.get(i).get(0).equals("0") && (int)(firstX - blankX) / spaceX == Integer.parseInt(stage.get(i).get(1)) && (int) (firstY - blankY) / spaceY == Integer.parseInt(stage.get(i).get(2))) { //빈칸이 아니고 동물이 있는 땅을 눌렀을 때
                         if (Integer.parseInt(stage.get(i).get(0)) < 10 && !stage.get(i).get(0).equals("0")) {
                             animal_clk = true;
                             animal = i;
