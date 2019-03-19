@@ -19,7 +19,6 @@ public class GameObject {
     int branch_tes = 99999999;
     int branch_tes2 = 99999999;
     int branch_tes3 = 99999999;
-    int branch_tes4 = 99999999;
 
     public GameObject(Context context) {
         mContext = context;
