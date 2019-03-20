@@ -13,6 +13,7 @@ public class Startpage extends AppCompatActivity {
     Thread w;
     boolean running = true, blink = true;
     Context context;
+    CreateDB CreateDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,12 +24,20 @@ public class Startpage extends AppCompatActivity {
         fullscreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                createDB();
                 running = false;
                 Intent intent = new Intent(Startpage.this,MainPage.class);
                 startActivity(intent);
                 finish();
             }
         });
+    }
+
+    public void createDB(){
+        if( CreateDB == null ) {
+            CreateDB = new CreateDB(Startpage.this, "StageDB", null , 1);
+            //CreateDB.putInData();
+        }
     }
 
     @Override

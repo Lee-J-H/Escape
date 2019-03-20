@@ -13,7 +13,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
+import static team_2e.escape_farm.Variable.animals;
 import static team_2e.escape_farm.Variable.boardSize;
+import static team_2e.escape_farm.Variable.direction;
 import static team_2e.escape_farm.Variable.stage;
 import static team_2e.escape_farm.Variable.animal;
 
@@ -72,35 +74,31 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
             case MotionEvent.ACTION_DOWN:
                 firstX = event.getX();
                 firstY = event.getY();
-                for (int i = 0; i < stage.size(); i++)
-                    if (!stage.get(i).get(0).equals("0") && (int)(firstX - blankX) / spaceX == Integer.parseInt(stage.get(i).get(1)) && (int) (firstY - blankY) / spaceY == Integer.parseInt(stage.get(i).get(2))) { //빈칸이 아니고 동물이 있는 땅을 눌렀을 때
-                        if (Integer.parseInt(stage.get(i).get(0)) < 10 && !stage.get(i).get(0).equals("0")) {
+                for (int i = 0; i < animals.length; i++)
+                    if (!animals[i].getKind().equals("none") && (int)(firstX - blankX) / spaceX == animals[i].getX() && (int) (firstY - blankY) / spaceY == animals[i].getY()) { //빈칸이 아니고 동물이 있는 땅을 눌렀을 때
+                        if (!animals[i].getKind().endsWith("fin") && !animals[i].getKind().equals("trap") && !animals[i].getKind().startsWith("warp")) {
                             animal_clk = true;
                             animal = i;
                         }
                         break;
-
                     }
                 break;
+
             case MotionEvent.ACTION_MOVE:
                 return true;
             case MotionEvent.ACTION_UP:
                 lastX = event.getX();
                 lastY = event.getY();
                 if (animal_clk) {
-                    int xy=0;
-                    String direction = "";
-                    if (Math.abs(firstX - lastX) >= spaceX && ((Integer.parseInt(stage.get(animal).get(2)) - 2.5) * spaceY) + blankY < lastY && lastY < ((Integer.parseInt(stage.get(animal).get(2)) + 2.5) * spaceY) + blankY) {
-                        xy = 1;
+                    if (Math.abs(firstX - lastX) >= spaceX && ((animals[animal].getY() - 2.5) * spaceY) + blankY < lastY && lastY < ((animals[animal].getY() + 2.5) * spaceY) + blankY) {
                         if (firstX > lastX) direction = "left"; // 좌측으로 이동
                         else if (firstX < lastX) direction = "right";// 우측으로 이동
-                    } else if (Math.abs(firstY - lastY) >= spaceY && ((Integer.parseInt(stage.get(animal).get(1)) - 2.5) * spaceX) + blankX < lastX && lastX < ((Integer.parseInt(stage.get(animal).get(1)) + 2.5) * spaceX) + blankX) {
-                        xy = 2;
+                    } else if (Math.abs(firstY - lastY) >= spaceY && ((animals[animal].getX() - 2.5) * spaceX) + blankX < lastX && lastX < ((animals[animal].getX() + 2.5) * spaceX) + blankX) {
                         if (firstY < lastY) direction = "down";//밑으로 이동
                         else if (firstY > lastY) direction = "up"; //위로 이동
                     }
-                    GameObject onGame = new GameObject(mContext);
-                    onGame.onAnimalMove(xy, direction);
+                    MovingObject onMove = new MovingObject(mContext);
+                    onMove.onAnimalMove();
                 }
                 animal_clk = false;
                 return false;
@@ -156,7 +154,8 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
             warp = Bitmap.createScaledBitmap(warp, (int) spaceX, (int) spaceY, true);
 
         }
-        private void doDraw(){
+
+        private void doDraw() {
             switch (boardSize) {
                 case 4:
                     blankX = spaceX * 3;
@@ -176,37 +175,41 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
                     mCanvas.drawBitmap(ground, (spaceX * i) + blankX, (spaceY * j) + blankY, null);
             }
             //stage.get(0)[0] 종류 ()[1] x, ()[2] y, ()[3] 우측벽, ()[4] 아래벽
-            for (int i = 0; i < stage.size(); i++) {
-                if (stage.get(i).get(3).equals("on")) //오른쪽 벽
-                    mCanvas.drawBitmap(wall_right, (spaceX * (Integer.parseInt(stage.get(i).get(1)) + 0.9f)) + blankX, (spaceY * Integer.parseInt(stage.get(i).get(2))) + blankY, null);
-                if (stage.get(i).get(4).equals("on")) //아래쪽 벽
-                    mCanvas.drawBitmap(wall_down, (spaceX * Integer.parseInt(stage.get(i).get(1))) + blankX, (spaceY * (Integer.parseInt(stage.get(i).get(2)) + 0.9f)) + blankY, null);
-                if (stage.get(i).get(0).equals("1")) //동물1
-                    mCanvas.drawBitmap(animal_1, (spaceX * Float.parseFloat(stage.get(i).get(1))) + blankX, (spaceY * Float.parseFloat(stage.get(i).get(2))) + blankY, null);
-                if (stage.get(i).get(0).equals("2")) //동물2
-                    mCanvas.drawBitmap(animal_2, (spaceX * Float.parseFloat(stage.get(i).get(1))) + blankX, (spaceY * Float.parseFloat(stage.get(i).get(2))) + blankY, null);
-                if (stage.get(i).get(0).equals("3")) //동물3
-                    mCanvas.drawBitmap(animal_3, (spaceX * Float.parseFloat(stage.get(i).get(1))) + blankX, (spaceY * Float.parseFloat(stage.get(i).get(2))) + blankY, null);
-                if (stage.get(i).get(0).equals("4")) //동물4
-                    mCanvas.drawBitmap(animal_4, (spaceX * Float.parseFloat(stage.get(i).get(1))) + blankX, (spaceY * Float.parseFloat(stage.get(i).get(2))) + blankY, null);
-                if (stage.get(i).get(0).equals("5")) //동물5
-                    mCanvas.drawBitmap(animal_5, (spaceX * Float.parseFloat(stage.get(i).get(1))) + blankX, (spaceY * Float.parseFloat(stage.get(i).get(2))) + blankY, null);
-                if (stage.get(i).get(0).equals("10")) //동물1-피니시
-                    mCanvas.drawBitmap(finish_1, (spaceX * Float.parseFloat(stage.get(i).get(1))) + blankX, (spaceY * Float.parseFloat(stage.get(i).get(2))) + blankY, null);
-                if (stage.get(i).get(0).equals("11")) //동물2-피니시
-                    mCanvas.drawBitmap(finish_2, (spaceX * Float.parseFloat(stage.get(i).get(1))) + blankX, (spaceY * Float.parseFloat(stage.get(i).get(2))) + blankY, null);
-                if (stage.get(i).get(0).equals("12")) //동물3-피니시
-                    mCanvas.drawBitmap(finish_3, (spaceX * Float.parseFloat(stage.get(i).get(1))) + blankX, (spaceY * Float.parseFloat(stage.get(i).get(2))) + blankY, null);
-                if (stage.get(i).get(0).equals("13")) //동물4-피니시
-                    mCanvas.drawBitmap(finish_4, (spaceX * Float.parseFloat(stage.get(i).get(1))) + blankX, (spaceY * Float.parseFloat(stage.get(i).get(2))) + blankY, null);
-                if (stage.get(i).get(0).equals("14")) //동물5-피니시
-                    mCanvas.drawBitmap(finish_5, (spaceX * Float.parseFloat(stage.get(i).get(1))) + blankX, (spaceY * Float.parseFloat(stage.get(i).get(2))) + blankY, null);
-                if (stage.get(i).get(0).equals("100")) //덫
-                    mCanvas.drawBitmap(trap, (spaceX * Float.parseFloat(stage.get(i).get(1))) + blankX, (spaceY * Float.parseFloat(stage.get(i).get(2))) + blankY, null);
-                if (stage.get(i).get(0).equals("150")) //워프1
-                    mCanvas.drawBitmap(warp, (spaceX * Float.parseFloat(stage.get(i).get(1))) + blankX, (spaceY * Float.parseFloat(stage.get(i).get(2))) + blankY, null);
-                if (stage.get(i).get(0).equals("200")) //워프1-1
-                    mCanvas.drawBitmap(warp, (spaceX * Float.parseFloat(stage.get(i).get(1))) + blankX, (spaceY * Float.parseFloat(stage.get(i).get(2))) + blankY, null);
+            for (int i = 0; i < animals.length; i++) {
+                if (animals[i].getBlock().equals("right")) //오른쪽 벽
+                    mCanvas.drawBitmap(wall_right, (spaceX * (animals[i].getX() + 0.9f)) + blankX, (spaceY * animals[i].getY()) + blankY, null);
+                if (animals[i].getBlock().equals("down")) //아래쪽 벽
+                    mCanvas.drawBitmap(wall_down, (spaceX * animals[i].getX()) + blankX, (spaceY * (animals[i].getY() + 0.9f)) + blankY, null);
+                if (animals[i].getBlock().equals("twice")) {
+                    mCanvas.drawBitmap(wall_right, (spaceX * (animals[i].getX() + 0.9f)) + blankX, (spaceY * animals[i].getY()) + blankY, null);
+                    mCanvas.drawBitmap(wall_down, (spaceX * animals[i].getX()) + blankX, (spaceY * (animals[i].getY() + 0.9f)) + blankY, null);
+                }
+                if (animals[i].getKind().equals("dog"))
+                    mCanvas.drawBitmap(animal_1, (spaceX * animals[i].getX()) + blankX, (spaceY * animals[i].getY()) + blankY, null);
+                if (animals[i].getKind().equals("cat"))
+                    mCanvas.drawBitmap(animal_2, (spaceX * animals[i].getX()) + blankX, (spaceY * animals[i].getY()) + blankY, null);
+                if (animals[i].getKind().equals("rabbit"))
+                    mCanvas.drawBitmap(animal_3, (spaceX * animals[i].getX()) + blankX, (spaceY * animals[i].getY()) + blankY, null);
+                if (animals[i].getKind().equals("cow"))
+                    mCanvas.drawBitmap(animal_4, (spaceX * animals[i].getX()) + blankX, (spaceY * animals[i].getY()) + blankY, null);
+                if (animals[i].getKind().equals("lion"))
+                    mCanvas.drawBitmap(animal_5, (spaceX * animals[i].getX()) + blankX, (spaceY * animals[i].getY()) + blankY, null);
+                if (animals[i].getKind().equals("dog_fin"))
+                    mCanvas.drawBitmap(finish_1, (spaceX * animals[i].getX()) + blankX, (spaceY * animals[i].getY()) + blankY, null);
+                if (animals[i].getKind().equals("cat_fin"))
+                    mCanvas.drawBitmap(finish_2, (spaceX * animals[i].getX()) + blankX, (spaceY * animals[i].getY()) + blankY, null);
+                if (animals[i].getKind().equals("rabbit_fin"))
+                    mCanvas.drawBitmap(finish_3, (spaceX * animals[i].getX()) + blankX, (spaceY * animals[i].getY()) + blankY, null);
+                if (animals[i].getKind().equals("cow_fin"))
+                    mCanvas.drawBitmap(finish_4, (spaceX * animals[i].getX()) + blankX, (spaceY * animals[i].getY()) + blankY, null);
+                if (animals[i].getKind().equals("lion_fin"))
+                    mCanvas.drawBitmap(finish_5, (spaceX * animals[i].getX()) + blankX, (spaceY * animals[i].getY()) + blankY, null);
+                if (animals[i].getKind().equals("tarp"))
+                    mCanvas.drawBitmap(trap, (spaceX * animals[i].getX()) + blankX, (spaceY * animals[i].getY()) + blankY, null);
+                if (animals[i].getKind().equals("warp"))
+                    mCanvas.drawBitmap(warp, (spaceX * animals[i].getX()) + blankX, (spaceY * animals[i].getY()) + blankY, null);
+                if (animals[i].getKind().equals("warp_"))
+                    mCanvas.drawBitmap(warp, (spaceX * animals[i].getX()) + blankX, (spaceY * animals[i].getY()) + blankY, null);
             }
         }
 
