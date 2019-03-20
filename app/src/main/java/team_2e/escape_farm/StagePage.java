@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import static team_2e.escape_farm.CheckedStage.onCheckStage;
+import static team_2e.escape_farm.Variable.stageCount;
 
 
 public class StagePage extends AppCompatActivity implements View.OnClickListener {
@@ -57,8 +58,11 @@ public class StagePage extends AppCompatActivity implements View.OnClickListener
     @Override
     public void onClick(View v) {
         String stage = v.getTag().toString();
+        stageCount = Integer.parseInt(stage);
         if (Integer.parseInt(stage) > lockImg.length) return;
-        StageData.getData(stage);
+        LoadingDB LoadingDB = new LoadingDB(StagePage.this, "StageDB",null,1);
+        LoadingDB.selectDB();
+        //StageData.getData(stage);
         Intent intent = new Intent(StagePage.this, Game_Stage.class);
         startActivityForResult(intent, CLEAR_STAGE);
     }
