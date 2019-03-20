@@ -18,6 +18,7 @@ public class GameObject {
 
     Context mContext;
 
+
     public GameObject(Context context) {
         mContext = context;
     }
